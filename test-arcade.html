@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ronke Blast - Arcade Test Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .controls {
+      padding: 30px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #495057;
+    }
+
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      resize: vertical;
+      min-height: 100px;
+      transition: border-color 0.2s;
+    }
+
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-size: 14px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    button.secondary {
+      background: #6c757d;
+    }
+
+    .test-accounts {
+      background: #e7f3ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    .test-accounts h3 {
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: #0066cc;
+    }
+
+    .test-accounts select {
+      width: 100%;
+      padding: 8px;
+      border: 2px solid #b3d9ff;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .iframe-container {
+      padding: 20px;
+      background: #fff;
+    }
+
+    #gameFrame {
+      width: 100%;
+      height: 800px;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      background: #000;
+    }
+
+    .console {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .console-entry {
+      margin-bottom: 8px;
+      padding: 4px 0;
+    }
+
+    .console-entry.info {
+      color: #4fc3f7;
+    }
+
+    .console-entry.error {
+      color: #f44336;
+    }
+
+    .console-entry.success {
+      color: #66bb6a;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .status.connected {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status.disconnected {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎮 Ronke Blast - Arcade Test Page</h1>
+      <p>Test Ronin Arcade API integration with token-based authentication</p>
+    </div>
+
+    <div class="controls">
+      <div class="form-group">
+        <label for="tokenInput">
+          Bearer Token
+          <span id="connectionStatus" class="status disconnected">Not Loaded</span>
+        </label>
+        <textarea
+          id="tokenInput"
+          placeholder="Paste your bearer token here (or select from test accounts below)"
+        ></textarea>
+      </div>
+
+      <div class="test-accounts">
+        <h3>📋 Quick Select Test Accounts (Staging)</h3>
+        <select id="testAccountSelect">
+          <option value="">-- Select a test account --</option>
+          <option value="roninarcadetest1">roninarcadetest1@yopmail.com</option>
+          <option value="roninarcadetest2">roninarcadetest2@yopmail.com</option>
+          <option value="roninarcadetest3">roninarcadetest3@yopmail.com</option>
+        </select>
+        <p style="margin-top: 10px; font-size: 12px; color: #666;">
+          ⚠️ Note: You need to manually paste the tokens for these accounts from the documentation
+        </p>
+      </div>
+
+      <div class="button-group">
+        <button id="loadGameBtn">🚀 Load Game</button>
+        <button id="sendTokenBtn" class="secondary" disabled>📤 Send Token to Game</button>
+        <button id="clearConsoleBtn" class="secondary">🗑️ Clear Console</button>
+      </div>
+    </div>
+
+    <div class="iframe-container">
+      <iframe id="gameFrame" style="display:none;"></iframe>
+    </div>
+
+    <div class="console" id="console">
+      <div class="console-entry info">Console ready. Load the game to begin testing.</div>
+    </div>
+  </div>
+
+  <script>
+    const tokenInput = document.getElementById('tokenInput');
+    const loadGameBtn = document.getElementById('loadGameBtn');
+    const sendTokenBtn = document.getElementById('sendTokenBtn');
+    const clearConsoleBtn = document.getElementById('clearConsoleBtn');
+    const gameFrame = document.getElementById('gameFrame');
+    const consoleDiv = document.getElementById('console');
+    const connectionStatus = document.getElementById('connectionStatus');
+    const testAccountSelect = document.getElementById('testAccountSelect');
+
+    let gameLoaded = false;
+
+    function log(message, type = 'info') {
+      const entry = document.createElement('div');
+      entry.className = `console-entry ${type}`;
+      const timestamp = new Date().toLocaleTimeString();
+      entry.textContent = `[${timestamp}] ${message}`;
+      consoleDiv.appendChild(entry);
+      consoleDiv.scrollTop = consoleDiv.scrollHeight;
+    }
+
+    testAccountSelect.addEventListener('change', (e) => {
+      if (e.target.value) {
+        log(`Selected test account: ${e.target.value}@yopmail.com`, 'info');
+        log('Please paste the corresponding token from the documentation', 'info');
+      }
+    });
+
+    tokenInput.addEventListener('input', (e) => {
+      const hasToken = e.target.value.trim().length > 0;
+      if (hasToken) {
+        connectionStatus.textContent = 'Token Ready';
+        connectionStatus.className = 'status connected';
+      } else {
+        connectionStatus.textContent = 'No Token';
+        connectionStatus.className = 'status disconnected';
+      }
+    });
+
+    loadGameBtn.addEventListener('click', () => {
+      log('Loading game...', 'info');
+      gameFrame.src = window.location.origin;
+      gameFrame.style.display = 'block';
+      gameLoaded = true;
+      sendTokenBtn.disabled = false;
+
+      gameFrame.onload = () => {
+        log('✓ Game loaded successfully', 'success');
+        log('Click "Send Token to Game" to authenticate', 'info');
+      };
+
+      gameFrame.onerror = () => {
+        log('✗ Failed to load game', 'error');
+        gameLoaded = false;
+        sendTokenBtn.disabled = true;
+      };
+    });
+
+    sendTokenBtn.addEventListener('click', () => {
+      const token = tokenInput.value.trim();
+
+      if (!token) {
+        log('✗ Error: No token provided', 'error');
+        return;
+      }
+
+      if (!gameLoaded) {
+        log('✗ Error: Game not loaded yet', 'error');
+        return;
+      }
+
+      log('Sending token to game iframe...', 'info');
+
+      try {
+        gameFrame.contentWindow.postMessage({
+          type: 'ARCADE_TOKEN',
+          token: token
+        }, '*');
+
+        log('✓ Token sent successfully', 'success');
+        log(`Token preview: ${token.substring(0, 50)}...`, 'info');
+      } catch (error) {
+        log(`✗ Error sending token: ${error.message}`, 'error');
+      }
+    });
+
+    clearConsoleBtn.addEventListener('click', () => {
+      consoleDiv.innerHTML = '<div class="console-entry info">Console cleared.</div>';
+    });
+
+    window.addEventListener('message', (event) => {
+      if (event.source === gameFrame.contentWindow) {
+        log(`← Message from game: ${JSON.stringify(event.data)}`, 'info');
+      }
+    });
+
+    log('Arcade test page initialized', 'success');
+    log('Instructions:', 'info');
+    log('1. Paste a bearer token or select a test account', 'info');
+    log('2. Click "Load Game" to start the game in an iframe', 'info');
+    log('3. Click "Send Token to Game" to authenticate', 'info');
+    log('4. The game will call the arcade API and display your energy', 'info');
+  </script>
+</body>
+</html>
